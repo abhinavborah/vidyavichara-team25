@@ -1,0 +1,3 @@
+# Vidya vichara
+
+initialized
