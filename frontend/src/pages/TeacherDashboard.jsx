@@ -305,7 +305,7 @@ export function TeacherDashboard() {
                 <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
                     <div className="flex items-center justify-between h-14 sm:h-16">
                         <div className="flex items-center space-x-2 sm:space-x-4">
-                            <h1 className="text-lg sm:text-xl font-semibold">VidyaVichar</h1>
+                            <h1 className="text-lg sm:text-xl font-semibold">VidyaVichara</h1>
                             <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
                                 <span>Welcome, {user?.name}</span>
                                 <span>•</span>
@@ -444,26 +444,26 @@ export function TeacherDashboard() {
                 {sessionId && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* To Address Column */}
-                        <div 
-                            className="min-h-[400px] transition-all duration-300 rounded-lg border-2 border-transparent" 
+                        <div
+                            className="min-h-[400px] transition-all duration-300 rounded-lg border-2 border-transparent"
                             onDragOver={(e) => {
                                 e.preventDefault();
                                 e.dataTransfer.dropEffect = 'move';
                                 e.currentTarget.classList.add('bg-red-50/80', 'dark:bg-red-900/20', 'border-red-300', 'dark:border-red-700', 'shadow-lg');
-                            }} 
+                            }}
                             onDragLeave={(e) => {
                                 if (!e.currentTarget.contains(e.relatedTarget)) {
                                     e.currentTarget.classList.remove('bg-red-50/80', 'dark:bg-red-900/20', 'border-red-300', 'dark:border-red-700', 'shadow-lg');
                                 }
-                            }} 
+                            }}
                             onDrop={(e) => {
                                 e.preventDefault();
                                 e.currentTarget.classList.remove('bg-red-50/80', 'dark:bg-red-900/20', 'border-red-300', 'dark:border-red-700', 'shadow-lg');
-                                
+
                                 try {
                                     const dragData = JSON.parse(e.dataTransfer.getData('text/plain'));
                                     const { questionId: draggedId } = dragData;
-                                    
+
                                     if (draggedId) {
                                         // Simply drop at the end of the section
                                         handleCrossColumnDrop(draggedId, 'unanswered');
@@ -503,26 +503,26 @@ export function TeacherDashboard() {
                         </div>
 
                         {/* Important Column */}
-                        <div 
-                            className="min-h-[400px] transition-all duration-300 rounded-lg border-2 border-transparent" 
+                        <div
+                            className="min-h-[400px] transition-all duration-300 rounded-lg border-2 border-transparent"
                             onDragOver={(e) => {
                                 e.preventDefault();
                                 e.dataTransfer.dropEffect = 'move';
                                 e.currentTarget.classList.add('bg-yellow-50/80', 'dark:bg-yellow-900/20', 'border-yellow-300', 'dark:border-yellow-700', 'shadow-lg');
-                            }} 
+                            }}
                             onDragLeave={(e) => {
                                 if (!e.currentTarget.contains(e.relatedTarget)) {
                                     e.currentTarget.classList.remove('bg-yellow-50/80', 'dark:bg-yellow-900/20', 'border-yellow-300', 'dark:border-yellow-700', 'shadow-lg');
                                 }
-                            }} 
+                            }}
                             onDrop={(e) => {
                                 e.preventDefault();
                                 e.currentTarget.classList.remove('bg-yellow-50/80', 'dark:bg-yellow-900/20', 'border-yellow-300', 'dark:border-yellow-700', 'shadow-lg');
-                                
+
                                 try {
                                     const dragData = JSON.parse(e.dataTransfer.getData('text/plain'));
                                     const { questionId: draggedId } = dragData;
-                                    
+
                                     if (draggedId) {
                                         // Simply drop at the end of the section
                                         handleCrossColumnDrop(draggedId, 'important');
@@ -562,26 +562,26 @@ export function TeacherDashboard() {
                         </div>
 
                         {/* Answered Column */}
-                        <div 
-                            className="min-h-[400px] transition-all duration-300 rounded-lg border-2 border-transparent" 
+                        <div
+                            className="min-h-[400px] transition-all duration-300 rounded-lg border-2 border-transparent"
                             onDragOver={(e) => {
                                 e.preventDefault();
                                 e.dataTransfer.dropEffect = 'move';
                                 e.currentTarget.classList.add('bg-green-50/80', 'dark:bg-green-900/20', 'border-green-300', 'dark:border-green-700', 'shadow-lg');
-                            }} 
+                            }}
                             onDragLeave={(e) => {
                                 if (!e.currentTarget.contains(e.relatedTarget)) {
                                     e.currentTarget.classList.remove('bg-green-50/80', 'dark:bg-green-900/20', 'border-green-300', 'dark:border-green-700', 'shadow-lg');
                                 }
-                            }} 
+                            }}
                             onDrop={(e) => {
                                 e.preventDefault();
                                 e.currentTarget.classList.remove('bg-green-50/80', 'dark:bg-green-900/20', 'border-green-300', 'dark:border-green-700', 'shadow-lg');
-                                
+
                                 try {
                                     const dragData = JSON.parse(e.dataTransfer.getData('text/plain'));
                                     const { questionId: draggedId } = dragData;
-                                    
+
                                     if (draggedId) {
                                         // Simply drop at the end of the section
                                         handleCrossColumnDrop(draggedId, 'answered');

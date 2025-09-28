@@ -55,7 +55,7 @@ function PublicRoute({ children }) {
 
 function App() {
     return (
-        <ThemeProvider defaultTheme="system" storageKey="vidyavichar-theme">
+        <ThemeProvider defaultTheme="system" storageKey="vidyavichara-theme">
             <AuthProvider>
                 <Router>
                     <div className="App">

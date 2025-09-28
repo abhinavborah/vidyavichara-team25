@@ -5,7 +5,7 @@ dotenv.config();
 
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/vidyavichar';
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/vidyavichara';
     
     const conn = await mongoose.connect(mongoUri, {
       // No need for deprecated options in Mongoose 6+

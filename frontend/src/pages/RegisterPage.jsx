@@ -69,7 +69,7 @@ export function RegisterPage() {
 
             <div className="w-full max-w-md space-y-6">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold tracking-tight">VidyaVichar</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">VidyaVichara</h1>
                     <p className="text-muted-foreground mt-2">
                         Create your account
                     </p>
@@ -89,7 +89,7 @@ export function RegisterPage() {
                                     {error}
                                 </div>
                             )}
-                            
+
                             {successMessage && (
                                 <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-sm p-3 rounded-md">
                                     {successMessage}

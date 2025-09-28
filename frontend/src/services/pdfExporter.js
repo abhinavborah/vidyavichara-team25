@@ -19,7 +19,7 @@ export class SessionPDFExporter {
             // Title
             doc.setFontSize(20);
             doc.setFont(undefined, 'bold');
-            doc.text('VidyaVichar Session Report', margin, yPosition);
+            doc.text('VidyaVichara Session Report', margin, yPosition);
             yPosition += 15;
 
             // Session info
@@ -146,7 +146,7 @@ export class SessionPDFExporter {
             }
 
             // Save the PDF
-            const filename = `VidyaVichar-${sessionData.sessionId}-${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`;
+            const filename = `VidyaVichara-${sessionData.sessionId}-${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`;
             doc.save(filename);
 
             return { success: true, filename };

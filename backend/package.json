@@ -1,7 +1,7 @@
 {
-    "name": "vidyavichar-backend",
+    "name": "vidyavichara-backend",
     "version": "1.0.0",
-    "description": "VidyaVichar Q&A Board Backend API",
+    "description": "VidyaVichara Q&A Board Backend API",
     "main": "src/server.js",
     "type": "module",
     "scripts": {
@@ -34,6 +34,6 @@
         "real-time",
         "mern"
     ],
-    "author": "VidyaVichar Team",
+    "author": "VidyaVichara Team 25",
     "license": "MIT"
 }

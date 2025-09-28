@@ -185,7 +185,7 @@ export function StudentDashboard() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center space-x-4">
-                            <h1 className="text-xl font-semibold">VidyaVichar</h1>
+                            <h1 className="text-xl font-semibold">VidyaVichara</h1>
                             <div className="hidden sm:flex items-center space-x-2 text-sm text-muted-foreground">
                                 <span>Welcome, {user?.name}</span>
                                 <span>•</span>
