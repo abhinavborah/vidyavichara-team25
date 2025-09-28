@@ -61,7 +61,72 @@ router.post('/', authenticate, authorize(['teacher']), validate(sessionValidatio
   }
 });
 
+// Get teacher's sessions
+router.get('/my-sessions', authenticate, authorize(['teacher']), async (req, res) => {
+  try {
+    const { limit = 20, active } = req.query;
+    
+    const query = { createdBy: req.user._id };
+    if (active === 'true') {
+      query.isActive = true;
+    }
 
+    const sessions = await Session.find(query)
+      .sort({ sessionDate: -1, createdAt: -1 })
+      .limit(parseInt(limit))
+      .exec();
+
+    // Include question count for each session
+    const sessionsWithCounts = await Promise.all(
+      sessions.map(async (session) => {
+        const questionCount = await Question.countDocuments({
+          sessionId: session.sessionId,
+          isActive: true
+        });
+        
+        return {
+          ...session.toObject(),
+          questionCount
+        };
+      })
+    );
+
+    res.json({
+      sessions: sessionsWithCounts,
+      count: sessionsWithCounts.length
+    });
+
+  } catch (error) {
+    console.error('Get my sessions error:', error);
+    res.status(500).json({ error: 'Failed to fetch sessions' });
+  }
+});
+
+// Get all active sessions (for joining)
+router.get('/active', authenticate, async (req, res) => {
+  try {
+    const { limit = 10 } = req.query;
+
+    const sessions = await Session.find({
+      isActive: true,
+      sessionDate: {
+        $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) // Last 24 hours
+      }
+    })
+      .sort({ sessionDate: -1 })
+      .limit(parseInt(limit))
+      .exec();
+
+    res.json({
+      sessions,
+      count: sessions.length
+    });
+
+  } catch (error) {
+    console.error('Get active sessions error:', error);
+    res.status(500).json({ error: 'Failed to fetch active sessions' });
+  }
+});
 
 // Get session by ID (for validation and details)
 router.get('/:sessionId', authenticate, async (req, res) => {
