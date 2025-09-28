@@ -1,0 +1,475 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Constitutional requirement: CSS variables for light/dark theme */
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 3.9%;
+        --primary: 0 0% 9%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 0 0% 96.1%;
+        --secondary-foreground: 0 0% 9%;
+        --muted: 0 0% 96.1%;
+        --muted-foreground: 0 0% 45.1%;
+        --accent: 0 0% 96.1%;
+        --accent-foreground: 0 0% 9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 89.8%;
+        --input: 0 0% 89.8%;
+        --ring: 0 0% 3.9%;
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 0 0% 3.9%;
+        --foreground: 0 0% 98%;
+        --card: 0 0% 3.9%;
+        --card-foreground: 0 0% 98%;
+        --popover: 0 0% 3.9%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 0 0% 98%;
+        --primary-foreground: 0 0% 9%;
+        --secondary: 0 0% 14.9%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 0 0% 14.9%;
+        --muted-foreground: 0 0% 63.9%;
+        --accent: 0 0% 14.9%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 14.9%;
+        --input: 0 0% 14.9%;
+        --ring: 0 0% 83.1%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+        /* Constitutional requirement: System fonts preferred */
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Constitutional requirement: Respect prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+
+    /* Constitutional requirement: Touch targets ≥ 44px */
+    button,
+    [role="button"],
+    input,
+    select,
+    textarea {
+        @apply min-h-touch min-w-touch;
+    }
+
+    /* Custom scrollbar styling for both light and dark themes */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+    }
+
+    /* Webkit scrollbar styling */
+    *::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: hsl(var(--muted-foreground) / 0.3);
+        border-radius: 4px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: hsl(var(--muted-foreground) / 0.5);
+        background-clip: content-box;
+    }
+
+    *::-webkit-scrollbar-corner {
+        background: transparent;
+    }
+}
+
+@layer components {
+
+    /* Enhanced sticky note component for questions */
+    .sticky-note {
+        @apply relative border border-border/50 rounded-lg p-4 shadow-sm;
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transform-origin: center center;
+        will-change: transform, box-shadow, filter;
+        backface-visibility: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .sticky-note[draggable="true"] {
+        cursor: grab;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+    .sticky-note[draggable="true"]:active {
+        cursor: grabbing;
+    }
+
+    /* Smoother hover effects with multiple transition stages */
+    .sticky-note:hover:not(.dragging) {
+        @apply shadow-xl border-border;
+        transform: translateY(-6px) scale(1.03) rotateX(2deg);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        filter: brightness(1.08) saturate(1.15) drop-shadow(0 8px 16px rgba(0,0,0,0.1));
+        z-index: 10;
+    }
+
+    /* Subtle pre-hover effect with shimmer */
+    .sticky-note.hovering:not(.dragging)::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+        border-radius: inherit;
+        opacity: 0;
+        animation: shimmer 1.5s ease-in-out infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    @keyframes shimmer {
+        0% { 
+            opacity: 0; 
+            transform: translateX(-100%);
+        }
+        50% { 
+            opacity: 0.4; 
+            transform: translateX(0%);
+        }
+        100% { 
+            opacity: 0; 
+            transform: translateX(100%);
+        }
+    }
+
+    /* Micro-interactions for buttons */
+    .sticky-note .btn-micro {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+    }
+
+    .sticky-note .btn-micro:hover {
+        transform: scale(1.1);
+        filter: brightness(1.2);
+    }
+
+    .sticky-note .btn-micro:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease-out;
+    }
+
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+        .sticky-note:hover:not(.dragging) {
+            transform: translateY(-3px) scale(1.02);
+        }
+        
+        .sticky-note .btn-micro:hover {
+            transform: scale(1.05);
+        }
+    }
+
+    .sticky-note.important {
+        @apply ring-2 ring-yellow-400/60;
+        animation: importantPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes importantPulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+        }
+        50% {
+            box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+        }
+    }
+
+    .sticky-note.answered {
+        @apply opacity-80;
+        filter: saturate(0.8);
+    }
+
+    .sticky-note.answered:hover:not(.dragging) {
+        @apply opacity-90;
+        filter: saturate(1);
+    }
+
+    /* Enhanced colorful variants for sticky notes */
+    .sticky-note.color-yellow {
+        @apply bg-gradient-to-br from-yellow-100 to-yellow-200 border-yellow-300 dark:from-yellow-900/30 dark:to-yellow-800/40 dark:border-yellow-700/50;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+    }
+
+    .sticky-note.color-pink {
+        @apply bg-gradient-to-br from-pink-100 to-rose-200 border-pink-300 dark:from-pink-900/30 dark:to-rose-800/40 dark:border-pink-700/50;
+        box-shadow: 0 4px 15px rgba(244, 114, 182, 0.2);
+    }
+
+    .sticky-note.color-blue {
+        @apply bg-gradient-to-br from-blue-100 to-sky-200 border-blue-300 dark:from-blue-900/30 dark:to-sky-800/40 dark:border-blue-700/50;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+
+    .sticky-note.color-green {
+        @apply bg-gradient-to-br from-green-100 to-emerald-200 border-green-300 dark:from-green-900/30 dark:to-emerald-800/40 dark:border-green-700/50;
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+    }
+
+    .sticky-note.color-purple {
+        @apply bg-gradient-to-br from-purple-100 to-violet-200 border-purple-300 dark:from-purple-900/30 dark:to-violet-800/40 dark:border-purple-700/50;
+        box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+    }
+
+    .sticky-note.color-indigo {
+        @apply bg-gradient-to-br from-indigo-100 to-blue-200 border-indigo-300 dark:from-indigo-900/30 dark:to-blue-800/40 dark:border-indigo-700/50;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+    }
+
+    .sticky-note.color-orange {
+        @apply bg-gradient-to-br from-orange-100 to-amber-200 border-orange-300 dark:from-orange-900/30 dark:to-amber-800/40 dark:border-orange-700/50;
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
+    }
+
+    .sticky-note.color-teal {
+        @apply bg-gradient-to-br from-teal-100 to-cyan-200 border-teal-300 dark:from-teal-900/30 dark:to-cyan-800/40 dark:border-teal-700/50;
+        box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2);
+    }
+
+    /* Enhanced drag states with smooth transitions */
+    .sticky-note.dragging {
+        @apply opacity-80 shadow-2xl;
+        transform: rotate(12deg) scale(1.1) translateZ(50px);
+        z-index: 1000;
+        transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.15s ease-out;
+        filter: brightness(1.15) saturate(1.3) drop-shadow(0 15px 35px rgba(0,0,0,0.25));
+        animation: dragFloat 0.8s ease-in-out infinite alternate;
+        will-change: transform;
+        perspective: 1000px;
+    }
+
+    /* Smooth floating animation during drag */
+    @keyframes dragFloat {
+        from {
+            transform: rotate(12deg) scale(1.1) translateY(0px) rotateX(0deg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+        to {
+            transform: rotate(12deg) scale(1.1) translateY(-8px) rotateX(5deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+        }
+    }
+
+    /* Drag start preparation */
+    .sticky-note[draggable="true"]:active:not(.dragging) {
+        transform: scale(0.98) rotate(2deg);
+        transition: transform 0.1s ease-out;
+    }
+
+    /* Drop zone indicators */
+    .sticky-note.drag-over-top {
+        position: relative;
+    }
+
+    .sticky-note.drag-over-top::before {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: hsl(var(--primary));
+        border-radius: 2px;
+        z-index: 10;
+        animation: dropZonePulse 1s ease-in-out infinite alternate;
+    }
+
+    .sticky-note.drag-over-bottom {
+        position: relative;
+    }
+
+    .sticky-note.drag-over-bottom::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: hsl(var(--primary));
+        border-radius: 2px;
+        z-index: 10;
+        animation: dropZonePulse 1s ease-in-out infinite alternate;
+    }
+
+    /* Drop zone animation */
+    @keyframes dropZonePulse {
+        from {
+            opacity: 0.6;
+            transform: scaleY(1);
+        }
+
+        to {
+            opacity: 1;
+            transform: scaleY(1.5);
+        }
+    }
+
+    /* Enhanced hover state during drag */
+    .sticky-note:not(.dragging):hover {
+        @apply ring-2 ring-primary/20;
+        transform: translateY(-2px);
+    }
+
+    /* Prevent hover effects on dragged item */
+    .sticky-note.dragging:hover {
+        transform: rotate(12deg) scale(1.1) translateZ(50px);
+    }
+
+    /* GPU acceleration for better performance */
+    .sticky-note,
+    .sticky-note::before,
+    .sticky-note::after {
+        will-change: transform, opacity, filter;
+        backface-visibility: hidden;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+    }
+
+    /* Smooth state transitions */
+    .sticky-note.important {
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .sticky-note.answered {
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* Enhanced section drop zone feedback */
+    .section-drop-zone {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .section-drop-zone::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .section-drop-zone.drag-active::before {
+        opacity: 1;
+        animation: sectionPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes sectionPulse {
+        0%, 100% {
+            transform: translateX(-100%);
+        }
+        50% {
+            transform: translateX(100%);
+        }
+    }
+
+    /* Empty drop zone styling */
+    .empty-drop-zone {
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        animation: dropZoneBreath 3s ease-in-out infinite;
+    }
+
+    @keyframes dropZoneBreath {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: scale(1.02);
+            opacity: 1;
+        }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        .sticky-note,
+        .sticky-note::before,
+        .sticky-note::after,
+        .btn-micro,
+        .section-drop-zone::before,
+        .empty-drop-zone {
+            animation: none !important;
+            transition: none !important;
+        }
+        
+        .sticky-note:hover:not(.dragging) {
+            transform: none !important;
+        }
+    }
+
+    /* Drop zone styling for top-of-column drops */
+    .drop-zone-top {
+        @apply relative transition-all duration-200;
+        min-height: 8px;
+    }
+
+    .drop-zone-top.drag-over-top {
+        @apply relative;
+    }
+
+    .drop-zone-top.drag-over-top::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: hsl(var(--primary));
+        border-radius: 2px;
+        z-index: 10;
+        animation: dropZonePulse 1s ease-in-out infinite alternate;
+    }
+}
