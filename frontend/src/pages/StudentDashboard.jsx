@@ -301,65 +301,85 @@ export function StudentDashboard() {
                     {/* Questions Columns - Only show if session is loaded */}
                     <div className="lg:col-span-2">
                         {currentSession ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Asked Questions */}
-                                <div>
-                                    <h2 className="text-lg font-semibold mb-4 flex items-center">
-                                        Asked Questions
-                                        <span className="ml-2 text-sm font-normal text-muted-foreground">
-                                            ({myAskedQuestions.length})
-                                        </span>
-                                    </h2>
-                                    <div className="space-y-4">
-                                        {myAskedQuestions.length === 0 ? (
-                                            <Card className="p-6">
-                                                <p className="text-muted-foreground text-center">
-                                                    No unanswered questions in this session yet
-                                                </p>
-                                            </Card>
-                                        ) : (
-                                            myAskedQuestions.map((question) => (
-                                                <StickyNote
-                                                    key={question._id}
-                                                    question={question}
-                                                    onUpdate={handleUpdateQuestion}
-                                                    onDelete={handleDeleteQuestion}
-                                                    isDraggable={true}
-                                                />
-                                            ))
-                                        )}
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Asked Questions */}
+                                    <div className="min-h-[400px]">
+                                        <div className="bg-gradient-to-r from-blue-100 to-sky-100 dark:from-blue-900/20 dark:to-sky-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4 shadow-sm">
+                                            <h2 className="font-semibold text-center text-blue-800 dark:text-blue-200">
+                                                📝 Asked Questions ({myAskedQuestions.length})
+                                            </h2>
+                                        </div>
+                                        <div className="space-y-4 max-h-[600px] overflow-y-auto p-4 min-h-[200px] rounded-lg">
+                                            {myAskedQuestions.length === 0 ? (
+                                                <div className="flex items-center justify-center h-32 border-2 border-dashed border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50/30 dark:bg-blue-900/10">
+                                                    <p className="text-blue-600 dark:text-blue-400 text-center text-sm font-medium">
+                                                        📝 No unanswered questions yet
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                myAskedQuestions.map((question) => (
+                                                    <StickyNote
+                                                        key={question._id}
+                                                        question={question}
+                                                        onUpdate={handleUpdateQuestion}
+                                                        onDelete={handleDeleteQuestion}
+                                                        isDraggable={true}
+                                                    />
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Answered Questions */}
+                                    <div className="min-h-[400px]">
+                                        <div className="bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-4 shadow-sm">
+                                            <h2 className="font-semibold text-center text-green-800 dark:text-green-200">
+                                                ✅ Answered Questions ({myAnsweredQuestions.length})
+                                            </h2>
+                                        </div>
+                                        <div className="space-y-4 max-h-[600px] overflow-y-auto p-4 min-h-[200px] rounded-lg">
+                                            {myAnsweredQuestions.length === 0 ? (
+                                                <div className="flex items-center justify-center h-32 border-2 border-dashed border-green-200 dark:border-green-800 rounded-lg bg-green-50/30 dark:bg-green-900/10">
+                                                    <p className="text-green-600 dark:text-green-400 text-center text-sm font-medium">
+                                                        ✅ No answered questions yet
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                myAnsweredQuestions.map((question) => (
+                                                    <StickyNote
+                                                        key={question._id}
+                                                        question={question}
+                                                        onUpdate={handleUpdateQuestion}
+                                                        onDelete={handleDeleteQuestion}
+                                                        isDraggable={false}
+                                                    />
+                                                ))
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Answered Questions */}
-                                <div>
-                                    <h2 className="text-lg font-semibold mb-4 flex items-center">
-                                        Answered Questions
-                                        <span className="ml-2 text-sm font-normal text-muted-foreground">
-                                            ({myAnsweredQuestions.length})
-                                        </span>
-                                    </h2>
-                                    <div className="space-y-4">
-                                        {myAnsweredQuestions.length === 0 ? (
-                                            <Card className="p-6">
-                                                <p className="text-muted-foreground text-center">
-                                                    No answered questions in this session yet
-                                                </p>
-                                            </Card>
-                                        ) : (
-                                            myAnsweredQuestions.map((question) => (
-                                                <StickyNote
-                                                    key={question._id}
-                                                    question={question}
-                                                    onUpdate={handleUpdateQuestion}
-                                                    onDelete={handleDeleteQuestion}
-                                                    isDraggable={false}
-                                                />
-                                            ))
-                                        )}
-                                    </div>
+                                {/* Summary Statistics */}
+                                <div className="mt-8 grid grid-cols-2 gap-4">
+                                    <Card className="p-4 text-center bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800">
+                                        <div className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300">
+                                            {myAskedQuestions.length}
+                                        </div>
+                                        <div className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-medium">
+                                            Unanswered
+                                        </div>
+                                    </Card>
+                                    <Card className="p-4 text-center bg-green-50/50 dark:bg-green-900/10 border-green-200 dark:border-green-800">
+                                        <div className="text-2xl sm:text-3xl font-bold text-green-700 dark:text-green-300">
+                                            {myAnsweredQuestions.length}
+                                        </div>
+                                        <div className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium">
+                                            Answered
+                                        </div>
+                                    </Card>
                                 </div>
-                            </div>
+                            </>
                         ) : (
                             <Card className="p-8">
                                 <div className="text-center space-y-4">
