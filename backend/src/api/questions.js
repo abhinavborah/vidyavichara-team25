@@ -233,18 +233,53 @@ router.get('/my-questions', authenticate, async (req, res) => {
 });
 
 // Update question display order (for drag & drop)
-router.patch('/:id/reorder', authenticate, authorize(['teacher']), async (req, res) => {
+router.patch('/:id/reorder', authenticate, async (req, res) => {
   try {
+    console.log('Reorder request received:', {
+      questionId: req.params.id,
+      userId: req.user._id,
+      userRole: req.user.role,
+      displayOrder: req.body.displayOrder
+    });
+
     const { id } = req.params;
     const { displayOrder } = req.body;
 
     const question = await Question.findById(id);
     if (!question || !question.isActive) {
+      console.log('Question not found or inactive:', id);
       return res.status(404).json({ error: 'Question not found' });
+    }
+
+    console.log('Question found:', {
+      questionId: question._id,
+      questionAuthor: question.author,
+      currentDisplayOrder: question.displayOrder
+    });
+
+    // Allow teachers to reorder any question, students to reorder their own
+    const isTeacher = req.user.role === 'teacher';
+    const isOwner = question.author.toString() === req.user._id.toString();
+
+    console.log('Authorization check:', {
+      isTeacher,
+      isOwner,
+      questionAuthor: question.author.toString(),
+      userId: req.user._id.toString()
+    });
+
+    if (!isTeacher && !isOwner) {
+      console.log('Authorization failed - not teacher and not owner');
+      return res.status(403).json({ error: 'Not authorized to reorder this question' });
     }
 
     question.displayOrder = displayOrder;
     await question.save();
+
+    console.log('Question reordered successfully:', {
+      questionId: question._id,
+      newDisplayOrder: displayOrder
+    });
 
     // Emit real-time update
     req.app.get('io').to(`session-${question.sessionId}`).emit('questionReordered', {
