@@ -84,10 +84,9 @@ export function StudentDashboard() {
         });
 
         socket.on('questionDeleted', (data) => {
-            // Only remove questions from the current session
-            if (currentSession && data.sessionId === currentSession.sessionId) {
-                setQuestions(prev => prev.filter(q => q._id !== data.questionId));
-            }
+            console.log('Received questionDeleted event:', data);
+            // Remove the question from the local state
+            setQuestions(prev => prev.filter(q => q._id !== data.questionId));
         });
 
         socket.on('sessionCleared', (data) => {
@@ -193,10 +192,13 @@ export function StudentDashboard() {
     };
 
     const handleDeleteQuestion = async (questionId) => {
+        console.log('Attempting to delete question:', questionId);
         try {
             await apiClient.deleteQuestion(questionId);
+            console.log('Question deletion request sent successfully');
         } catch (error) {
             console.error('Failed to delete question:', error);
+            setError('Failed to delete question: ' + error.message);
             throw error;
         }
     };

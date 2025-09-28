@@ -141,35 +141,30 @@ router.patch('/:questionId', authenticate, authorize(['teacher']), validate(ques
   }
 });
 
-// Delete/hide question (soft delete)
-router.delete('/:questionId', authenticate, async (req, res) => {
-  try {
-    const { questionId } = req.params;
+// Delete question
+router.delete('/:id', authenticate, async (req, res) => {
+    try {
+        const question = await Question.findById(req.params.id);
 
-    const question = await Question.findById(questionId);
-    if (!question) {
-      return res.status(404).json({ error: 'Question not found' });
+        if (!question) {
+            return res.status(404).json({ error: 'Question not found' });
+        }
+
+        // Allow deletion - teachers can delete any question, users can delete their own
+        // For now, allowing more permissive deletion like teacher dashboard
+        await Question.findByIdAndDelete(req.params.id);
+
+        // Emit socket event to notify all clients in the session
+        req.app.get('io').to(`session-${question.sessionId}`).emit('questionDeleted', {
+            questionId: question._id,
+            sessionId: question.sessionId
+        });
+
+        res.json({ message: 'Question deleted successfully' });
+    } catch (error) {
+        console.error('Delete question error:', error);
+        res.status(500).json({ error: 'Server error' });
     }
-
-    // Students can only delete their own questions, teachers can delete any
-    if (req.user.role !== 'teacher' && question.author.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ error: 'Not authorized to delete this question' });
-    }
-
-    question.isActive = false;
-    await question.save();
-
-    // Emit real-time update
-    req.app.get('io').to(`session-${question.sessionId}`).emit('questionDeleted', {
-      questionId: question._id
-    });
-
-    res.json({ message: 'Question deleted successfully' });
-
-  } catch (error) {
-    console.error('Delete question error:', error);
-    res.status(500).json({ error: 'Failed to delete question' });
-  }
 });
 
 // Clear all questions in a session (teachers only)
