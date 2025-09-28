@@ -15,7 +15,14 @@ export function StudentDashboard() {
     const { user, logout } = useAuth();
     const [questions, setQuestions] = useState([]);
     const [newQuestion, setNewQuestion] = useState('');
-    const [currentSession, setCurrentSession] = useState(null);
+    const [currentSession, setCurrentSession] = useState(() => {
+        // Restore session from sessionStorage if user is authenticated
+        if (user) {
+            const savedSession = sessionStorage.getItem('currentStudentSession');
+            return savedSession ? JSON.parse(savedSession) : null;
+        }
+        return null;
+    });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [isConnected, setIsConnected] = useState(false);
@@ -28,8 +35,22 @@ export function StudentDashboard() {
             setNewQuestion('');
             setCurrentSession(null);
             setError('');
+            // Clear persisted session data
+            sessionStorage.removeItem('currentStudentSession');
+        } else {
+            // User is authenticated, try to restore session
+            const savedSession = sessionStorage.getItem('currentStudentSession');
+            if (savedSession && !currentSession) {
+                try {
+                    const parsedSession = JSON.parse(savedSession);
+                    setCurrentSession(parsedSession);
+                } catch (error) {
+                    console.error('Failed to restore session from storage:', error);
+                    sessionStorage.removeItem('currentStudentSession');
+                }
+            }
         }
-    }, [user]);
+    }, [user, currentSession]);
 
     // Socket connection and event handlers
     useEffect(() => {
@@ -113,9 +134,20 @@ export function StudentDashboard() {
             console.error('Failed to load session questions:', error);
             setError('Failed to load session questions');
         }
-    }; const handleSessionLoad = (session) => {
+    };
+
+    const handleSessionLoad = (session) => {
         setCurrentSession(session);
         setError(''); // Clear any previous errors
+
+        // Persist session data to sessionStorage if user is authenticated
+        if (user) {
+            if (session) {
+                sessionStorage.setItem('currentStudentSession', JSON.stringify(session));
+            } else {
+                sessionStorage.removeItem('currentStudentSession');
+            }
+        }
     };
 
     const handleSubmitQuestion = async (e) => {

@@ -21,7 +21,8 @@ export function AuthProvider({ children }) {
 
     const clearUserSessionData = () => {
         // Clear session-specific data stored by previous user
-        sessionStorage.removeItem('selectedSessionId');
+        sessionStorage.removeItem('selectedSessionId'); // Teacher session
+        sessionStorage.removeItem('currentStudentSession'); // Student session
         // Clear any other user-specific session data
         // Note: Don't clear localStorage token here as it's handled by apiClient
     };
@@ -46,16 +47,16 @@ export function AuthProvider({ children }) {
         try {
             // Clear any previous user's session data before login
             clearUserSessionData();
-            
+
             // Disconnect any existing socket connection from previous user
             socketService.disconnect();
-            
+
             const response = await apiClient.login(credentials);
             setUser(response.user);
-            
+
             // Reconnect socket with new authentication
             socketService.reconnectWithNewAuth();
-            
+
             return { success: true };
         } catch (error) {
             console.error('Login failed:', error);
@@ -83,7 +84,7 @@ export function AuthProvider({ children }) {
             // Clear user state and session data
             setUser(null);
             clearUserSessionData();
-            
+
             // Disconnect socket connection
             socketService.disconnect();
         }
