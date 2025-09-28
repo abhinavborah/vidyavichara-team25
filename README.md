@@ -64,6 +64,10 @@ cp .env.example .env
 
 Start MongoDB locally or ensure your MongoDB Atlas connection is ready. The application will automatically create the required collections.
 
+```bash
+# mongosh mongodb://localhost:27017/vidyavichara
+```
+
 ### 4. Start the Application
 
 **Start Backend (Terminal 1):**
