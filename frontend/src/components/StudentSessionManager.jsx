@@ -88,47 +88,72 @@ export function StudentSessionManager({ onSessionLoad, currentSession, isLoading
                     </Button>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent className="p-4 sm:p-6">
                     <div className="space-y-4">
-                        {/* Session Info */}
-                        <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
-                            <div className="flex items-center gap-2 mb-2">
-                                <h3 className="font-medium text-primary">
-                                    {currentSession.courseName}
-                                </h3>
-                                <Badge variant="secondary" className="text-xs font-mono">
-                                    {currentSession.sessionId}
-                                </Badge>
-                                <Badge variant="outline" className="text-xs text-green-600 border-green-200">
-                                    Active
-                                </Badge>
+                        {/* Session Info Card */}
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20 shadow-sm">
+                            {/* Header Section */}
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold text-lg text-primary mb-1 truncate">
+                                        {currentSession.courseName}
+                                    </h3>
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="secondary" className="text-xs font-mono px-2 py-1 bg-muted/80">
+                                            {currentSession.sessionId}
+                                        </Badge>
+                                        <Badge variant="outline" className="text-xs font-medium text-green-700 border-green-300 bg-green-50 dark:bg-green-950/30 px-2 py-1">
+                                            ● Active
+                                        </Badge>
+                                    </div>
+                                </div>
                             </div>
 
+                            {/* Description */}
                             {currentSession.description && (
-                                <p className="text-sm text-muted-foreground mb-2">
-                                    {currentSession.description}
-                                </p>
+                                <div className="mb-4">
+                                    <p className="text-sm text-foreground/80 leading-relaxed line-clamp-2">
+                                        {currentSession.description}
+                                    </p>
+                                </div>
                             )}
 
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                    <CalendarIcon className="h-3 w-3" />
-                                    {formatDate(currentSession.sessionDate)}
+                            {/* Metadata Grid */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-primary/10">
+                                <div className="flex items-center gap-2 text-xs">
+                                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
+                                        <CalendarIcon className="h-3 w-3 text-primary" />
+                                    </div>
+                                    <div>
+                                        <div className="font-medium text-foreground">{formatDate(currentSession.sessionDate)}</div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <ClockIcon className="h-3 w-3" />
-                                    {formatTime(currentSession.createdAt)}
+                                <div className="flex items-center gap-2 text-xs">
+                                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
+                                        <ClockIcon className="h-3 w-3 text-primary" />
+                                    </div>
+                                    <div>
+                                        <div className="font-medium text-foreground">{formatTime(currentSession.createdAt)}</div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <UsersIcon className="h-3 w-3" />
-                                    {currentSession.questionCount || 0} questions
+                                <div className="flex items-center gap-2 text-xs">
+                                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
+                                        <UsersIcon className="h-3 w-3 text-primary" />
+                                    </div>
+                                    <div>
+                                        <div className="font-medium text-foreground">{currentSession.questionCount || 0} questions</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Teacher Info */}
-                        <div className="text-xs text-muted-foreground">
-                            <span className="font-medium">Instructor:</span> {currentSession.createdBy?.name}
+                        {/* Instructor Info */}
+                        <div className="flex items-center gap-2 p-3 rounded-md bg-muted/30">
+                            <div className="w-2 h-2 rounded-full bg-primary"></div>
+                            <div className="text-sm">
+                                <span className="text-muted-foreground">Instructor:</span>
+                                <span className="font-medium text-foreground ml-2">{currentSession.createdBy?.name}</span>
+                            </div>
                         </div>
                     </div>
                 </CardContent>

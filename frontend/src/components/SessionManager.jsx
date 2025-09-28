@@ -116,7 +116,7 @@ export function SessionManager({ onSessionSelect, selectedSessionId }) {
             console.log('Calling apiClient.endSession...');
             const result = await apiClient.endSession(sessionToEnd.id);
             console.log('Session ended successfully:', result);
-            
+
             // Remove from sessions list or mark as inactive
             setSessions(prev => prev.filter(s => s.sessionId !== sessionToEnd.id));
 
@@ -268,63 +268,79 @@ export function SessionManager({ onSessionSelect, selectedSessionId }) {
                             {sessions.map((session) => (
                                 <div
                                     key={session.sessionId}
-                                    className={`p-2 sm:p-4 rounded-lg border cursor-pointer transition-colors hover:bg-muted/50 ${selectedSessionId === session.sessionId
-                                        ? 'border-primary bg-primary/5'
-                                        : 'border-border'
+                                    className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-muted/30 ${selectedSessionId === session.sessionId
+                                            ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20'
+                                            : 'border-border hover:border-primary/30'
                                         }`}
                                     onClick={() => handleSessionSelect(session.sessionId)}
                                 >
-                                    {/* Header Row - Course, Session ID, Active Badge, Delete Button */}
-                                    <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+                                    {/* Header Section */}
+                                    <div className="flex items-start justify-between mb-3 gap-3">
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="font-medium text-xs sm:text-sm truncate mb-1">
+                                            <h3 className="font-semibold text-sm sm:text-base truncate mb-2 text-foreground">
                                                 {session.courseName}
                                             </h3>
-                                            <Badge variant="secondary" className="text-[10px] sm:text-xs font-mono shrink-0 px-1 py-0">
-                                                {session.sessionId}
-                                            </Badge>
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant="secondary" className="text-xs font-mono px-2 py-1 bg-muted/80">
+                                                    {session.sessionId}
+                                                </Badge>
+                                                {session.isActive && (
+                                                    <Badge variant="outline" className="text-xs font-medium text-green-700 border-green-300 bg-green-50 dark:bg-green-950/30 px-2 py-1">
+                                                        ● Active
+                                                    </Badge>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        <div className="flex items-start gap-1 sm:gap-2 shrink-0">
+                                        <div className="flex items-start shrink-0">
                                             {session.isActive && (
-                                                <>
-                                                    <Badge variant="outline" className="text-[10px] sm:text-xs text-green-600 border-green-200 px-1 py-0">
-                                                        Active
-                                                    </Badge>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={(e) => handleEndSession(session.sessionId, session.courseName, e)}
-                                                        className="h-6 w-6 sm:h-7 sm:w-7 p-0 text-muted-foreground hover:text-red-600 hover:bg-red-50"
-                                                        title="End Session"
-                                                    >
-                                                        <XIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                                                    </Button>
-                                                </>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={(e) => handleEndSession(session.sessionId, session.courseName, e)}
+                                                    className="h-8 w-8 p-0 text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-full"
+                                                    title="End Session"
+                                                >
+                                                    <XIcon className="h-4 w-4" />
+                                                </Button>
                                             )}
                                         </div>
                                     </div>
 
                                     {/* Description */}
                                     {session.description && (
-                                        <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 line-clamp-2 leading-tight">
-                                            {session.description}
-                                        </p>
+                                        <div className="mb-4">
+                                            <p className="text-sm text-foreground/80 line-clamp-2 leading-relaxed">
+                                                {session.description}
+                                            </p>
+                                        </div>
                                     )}
 
-                                    {/* Metadata Row - Date, Time, Questions */}
-                                    <div className="flex items-center flex-wrap gap-2 sm:gap-6 text-[10px] sm:text-xs text-muted-foreground">
-                                        <div className="flex items-center gap-1">
-                                            <CalendarIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" />
-                                            <span className="truncate">{formatDate(session.sessionDate)}</span>
+                                    {/* Metadata Grid */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-border/50">
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
+                                                <CalendarIcon className="h-3 w-3 text-primary" />
+                                            </div>
+                                            <div>
+                                                <div className="font-medium text-foreground">{formatDate(session.sessionDate)}</div>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1">
-                                            <ClockIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" />
-                                            <span className="truncate">{formatTime(session.createdAt)}</span>
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
+                                                <ClockIcon className="h-3 w-3 text-primary" />
+                                            </div>
+                                            <div>
+                                                <div className="font-medium text-foreground">{formatTime(session.createdAt)}</div>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1">
-                                            <UsersIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" />
-                                            <span className="truncate">{session.questionCount || 0} questions</span>
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
+                                                <UsersIcon className="h-3 w-3 text-primary" />
+                                            </div>
+                                            <div>
+                                                <div className="font-medium text-foreground">{session.questionCount || 0} questions</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
