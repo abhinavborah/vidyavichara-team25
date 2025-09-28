@@ -92,3 +92,17 @@ npm run dev
 2. Register as either a Student or Teacher
 3. **Students**: Submit questions for your lecture session
 4. **Teachers**: Load a session to view and manage questions in real-time
+
+## Solution Diagram
+
+![Solution Diagram](./readme-assets/solution-diagram.png)
+
+## User Flows
+
+### Teacher
+
+![Teacher Userflow](./readme-assets/teacher-userflow.png)
+
+### Student
+
+![Student Userflow](./readme-assets/student-userflow.png)
