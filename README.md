@@ -169,3 +169,76 @@ npm run dev
 ### Student
 
 ![Student Userflow](./readme-assets/student-userflow.png)
+
+# VidyaVichara System Assumptions
+
+## User Management & Authentication
+
+1. **One session can only be taught by a single teacher** - Each session has exactly one `createdBy` field linking to a single teacher
+2. **Users can only have one role** - A user is either a 'student' or 'teacher', not both
+3. **Email addresses are unique** - One email per user account across the entire system
+4. **Users remain active by default** - New users have `isActive: true` and can only be deactivated, not deleted
+5. **JWT tokens are stateless** - No server-side session storage; tokens contain all necessary auth info
+6. **Token expiration is fixed** - Default 7-day expiration for all users regardless of role
+7. **Password requirements are uniform** - Minimum 8 characters for all users
+8. **Only active users can log in** - Inactive users are blocked from authentication
+
+## Session Management
+
+9. **Session IDs are auto-generated** - Human-readable format: `COURSE-MMMDD-XXX` (e.g., `SCI-SEP26-001`)
+10. **Sessions are owned by their creator** - Only the teacher who created a session can modify/end it
+11. **Sessions can be created for future dates** - No restriction on session date being today or future
+12. **Session names are limited to 50 characters** - Course name constraint for ID generation
+13. **Sessions persist indefinitely** - No automatic cleanup of old sessions
+14. **Sessions are single-day events** - No multi-day session support in the ID generation logic
+15. **Only teachers can create sessions** - Students cannot initiate new lecture sessions
+16. **Sessions can be inactive but not deleted** - Soft delete approach using `isActive` flag
+17. **Session sequence numbers are auto-incremented** - Multiple sessions per course/date get sequential numbers
+
+## Question Management
+
+18. **Students can ask multiple questions per session** - No limit on question count per student
+19. **Duplicate questions are prevented per user per session** - Same user cannot ask identical question text in same session
+20. **Questions are limited to 500 characters** - Hard limit on question text length
+21. **Questions are automatically colored** - Random pastel color assignment on creation
+22. **Questions persist after session ends** - Questions remain accessible even when session is inactive
+23. **Question authors cannot be changed** - `author` field is immutable after creation
+24. **Questions can be reordered by display order only by teacher** - Only teachers can change display order, students are not allowed
+25. **Question status is tri-state** - 'unanswered', 'answered', or 'important' only
+26. **Only teachers can update question status** - Students cannot mark their own questions as answered
+27. **Questions use soft delete** - `isActive: false` instead of actual deletion
+28. **Questions store metadata** - IP address and user agent tracked for each question
+
+## Real-time Communication
+
+29. **Socket connections are session-scoped** - Users join/leave specific session rooms
+30. **Real-time updates are immediate** - No batching or throttling of socket events
+31. **Socket authentication uses JWT** - Same token system as REST API
+32. **Disconnections are handled gracefully** - Automatic reconnection with exponential backoff
+33. **Socket events are unidirectional** - Server broadcasts, clients receive (no peer-to-peer)
+
+## Authorization & Permissions
+
+34. **Teachers have elevated privileges** - Can modify any question status, clear sessions, etc.
+35. **Students can not modify their own questions** 
+36. **Session ownership is absolute** - Only session creator can perform admin actions
+37. **Role-based access is enforced on all endpoints** - No role escalation possible
+38. **API endpoints require authentication** - No anonymous access to any functionality
+
+## Data Persistence & Storage
+
+39. **MongoDB is the single source of truth** - No caching layer or secondary storage
+40. **Relationships use ObjectId references** - Foreign keys link documents across collections
+41. **Pre-population is automatic** - Author/creator details auto-populated on queries
+42. **Indexes are manually defined** - No automatic index generation beyond unique constraints
+43. **Data validation happens at both schema and application level** - Mongoose + Zod validation
+44. **Timestamps are automatically managed** - `createdAt` and `updatedAt` fields auto-generated
+
+## Client-side Behavior
+
+45. **Session selection persists in browser** - `sessionStorage` remembers selected session ID
+46. **Authentication state is localStorage-based** - JWT token stored in browser local storage
+47. **Real-time connection is mandatory** - Application expects socket connection for full functionality
+48. **PDF export is client-side generated** - No server-side PDF generation
+49. **Theme preference is persisted** - Dark/light mode setting saved locally
+50. **Form validation mirrors server validation** - Client-side validation matches backend schemas
