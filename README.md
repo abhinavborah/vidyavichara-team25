@@ -1,5 +1,7 @@
 # VidyaVichara - Classroom Q&A Board
 
+> Github Link is [here](https://github.com/abhinavborah/vidyavichara-team25)
+
 A real-time classroom Q&A application where students can post questions during lectures and instructors can view, organize, and respond to them in real-time.
 
 Made with ❤️ by Team 25.
@@ -220,7 +222,7 @@ npm run dev
 ## Authorization & Permissions
 
 34. **Teachers have elevated privileges** - Can modify any question status, clear sessions, etc.
-35. **Students can not modify their own questions** 
+35. **Students can not modify their own questions**
 36. **Session ownership is absolute** - Only session creator can perform admin actions
 37. **Role-based access is enforced on all endpoints** - No role escalation possible
 38. **API endpoints require authentication** - No anonymous access to any functionality
