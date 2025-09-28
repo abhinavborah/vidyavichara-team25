@@ -87,7 +87,7 @@ export function StickyNote({
 
         setIsDragging(true);
         setIsHovering(false);
-        
+
         // Store both question ID and current status for column detection
         e.dataTransfer.setData('text/plain', JSON.stringify({
             questionId: question._id,
@@ -108,7 +108,7 @@ export function StickyNote({
         dragImage.style.borderRadius = '12px';
         dragImage.style.filter = 'brightness(1.1) saturate(1.2)';
         dragImage.style.pointerEvents = 'none';
-        
+
         document.body.appendChild(dragImage);
 
         // Set drag image with better positioning
@@ -170,11 +170,29 @@ export function StickyNote({
     };
 
     const handleDrop = (e) => {
-        // Individual drop handling is now managed at section level
-        // Keep this for within-section reordering if needed in the future
         e.preventDefault();
-        setDragPosition('none');
         e.currentTarget.classList.remove('drag-over-top', 'drag-over-bottom');
+
+        // Handle within-section reordering
+        try {
+            const dragData = JSON.parse(e.dataTransfer.getData('text/plain'));
+            const { questionId: draggedId } = dragData;
+
+            if (draggedId && draggedId !== question._id && onReorder) {
+                // Calculate position based on mouse position at drop time
+                const rect = e.currentTarget.getBoundingClientRect();
+                const y = e.clientY - rect.top;
+                const height = rect.height;
+                const position = y < height / 2 ? 'before' : 'after';
+
+                console.log('Dropping:', draggedId, 'on:', question._id, 'position:', position);
+                onReorder(draggedId, question._id, position);
+            }
+        } catch (error) {
+            console.error('Drop reorder error:', error);
+        } finally {
+            setDragPosition('none');
+        }
     };
 
     const formatTime = (timestamp) => {

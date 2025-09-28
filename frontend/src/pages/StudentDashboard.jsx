@@ -84,12 +84,9 @@ export function StudentDashboard() {
         });
 
         socket.on('questionDeleted', (data) => {
-            console.log('Received questionDeleted event:', data);
-            // Remove the question from the local state
+            // Remove question from current session
             setQuestions(prev => prev.filter(q => q._id !== data.questionId));
-        });
-
-        socket.on('sessionCleared', (data) => {
+        }); socket.on('sessionCleared', (data) => {
             // Only clear questions if it's for the current session
             if (currentSession && data.sessionId === currentSession.sessionId) {
                 setQuestions([]);
@@ -326,7 +323,7 @@ export function StudentDashboard() {
                                                         question={question}
                                                         onUpdate={handleUpdateQuestion}
                                                         onDelete={handleDeleteQuestion}
-                                                        isDraggable={true}
+                                                        isDraggable={false}
                                                     />
                                                 ))
                                             )}
